@@ -3,41 +3,37 @@ MAINTAINER Greg Nishihara (greg@nagasaki-u.ac.jp)
 
 # install cron and R package dependencies
 RUN apt-get update && apt-get install -y \
-    cron \
-    nano \
     imagemagick \
     ## clean up
     && apt-get clean \ 
     && rm -rf /var/lib/apt/lists/ \ 
     && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
     
+RUN mkdir .R
+RUN echo " " > .R/Makevars
+RUN echo "CXX14FLAGS=-O3 -march=native -mtune=native -fPIC" >> .R/Makevars
+RUN echo "CXX14=g++" >> .R/Makevars
+RUN echo " " >> .R/Makevars
+RUN export MAKEFLAGS='-j 4'
+
 ## Install packages from CRAN
 
 
-RUN Rscript -e 'install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))' 
+RUN Rscript -e 'install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")), Ncpus = 4)' 
 RUN Rscript -e 'library(cmdstanr); install_cmdstan(); cmdstan_path();' 
  
-RUN Rscript -e 'Sys.setenv(DOWNLOAD_STATIC_LIBV8 = 1); install.packages("rstan", repos = "https://cloud.r-project.org/", dependencies = TRUE)'
+RUN Rscript -e 'install.packages("rstan", repos = "https://cloud.r-project.org/", dependencies = TRUE, Ncpus=4)'
 
 RUN install2.r --error --skipinstalled rstanarm
 
 ENV BAYES_R_PACKAGES="\
     brms \
     rstantools \
-    loo \
-    posterior \
-    tidybayes \
-    bayesplot \
-    Matrix \
+    parallel \
+    tidyverse \
     furrr \
-    patchwork \
-    ggpubr \
-    tidybayes \
-    bayesplot \
-    ggmcmc \
-    marelac \
-    mgcv \
-    magick \
+    future \
+    future.apply \
 " 
 
 
