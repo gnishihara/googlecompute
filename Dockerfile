@@ -3,7 +3,7 @@ MAINTAINER Greg Nishihara (greg@nagasaki-u.ac.jp)
 
 # install cron and R package dependencies
 RUN apt-get update && apt-get install -y \
-    imagemagick \
+    libv8-dev \
     ## clean up
     && apt-get clean \ 
     && rm -rf /var/lib/apt/lists/ \ 
