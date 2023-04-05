@@ -6,4 +6,5 @@ steps:
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/github.com/googlecompute:latest', '--cache-from', 'gcr.io/$PROJECT_ID/github.com/googlecompute:latest', '.']
 images: ["gcr.io/$PROJECT_ID/github.com/googlecompute:latest"]
 options:
-  machineType: 'e2-highcpu-8'
+  machineType: 'E2_HIGHCPU_32'
+  
